@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const {policy_check} = require('../../middleware')
+const {policy_check} = require('../../middlewares/policyMiddleware')
 const orderController = require('./controller')
 
 router.get('/order', policy_check('read', 'Order'), orderController.index)

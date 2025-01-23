@@ -58,7 +58,7 @@ const login = async (req,res,next)=>{
 
         let updatedUser = {}
         try {
-            updatedUser = await User.findByIdAndUpdate(user._id, { $push: { token: signed } }, {new: true});
+            updatedUser = await User.findByIdAndUpdate(user._id, { $set: { token: signed } }, {new: true});
             
         } catch (updateError) {
             return next(updateError); // Handle potential update errors

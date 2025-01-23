@@ -7,6 +7,9 @@ const productRoutes = require('./app/product/routes')
 const tagRouter = require('./app/tags/routes')
 const categoryRouter = require('./app/category/routes')
 const userRouter = require('./app/auth/routes')
+const orderRouter = require('./app/order/routes')
+const cartRouter = require('./app/cart/routes')
+const deliveryAddressRouter = require('./app/deliveryAddress/routes')
 const { ForbiddenError } = require('@casl/ability')
 var indexRouter = require('./routes/index');
 
@@ -28,6 +31,9 @@ app.use('/auth', userRouter)
 app.use('/api', productRoutes)
 app.use('/api', tagRouter)
 app.use('/api', categoryRouter)
+app.use('/api', orderRouter)
+app.use('/api', cartRouter)
+app.use('/api', deliveryAddressRouter)
 
 
 app.use((err, req, res, next) => {

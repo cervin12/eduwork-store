@@ -1,4 +1,4 @@
-const {policy_check} = require('../../middleware')
+const {policy_check} = require('../../middlewares/policyMiddleware')
 const router = require('express').Router()
 const deliveryAddressController = require('./controller')
 

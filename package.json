@@ -7,12 +7,14 @@
   },
   "dependencies": {
     "@casl/ability": "^6.7.2",
+    "@reduxjs/toolkit": "^2.4.0",
     "bcrypt": "^5.1.1",
     "casl": "^1.1.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^16.4.5",
     "express": "~4.16.1",
+    "faker": "^6.6.6",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.0",
@@ -21,6 +23,7 @@
     "multer": "^1.4.5-lts.1",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
-    "pug": "2.0.0-beta11"
+    "pug": "2.0.0-beta11",
+    "react-redux": "^9.1.2"
   }
 }

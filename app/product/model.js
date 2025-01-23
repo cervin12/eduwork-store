@@ -7,19 +7,19 @@ const productSchema = new Schema({
         required: [true, 'Nama produk harus diisi'],
         minlength: [3, 'Minimal nama produk terdiri dari 3 huruf']
     },
-    stock: {
-        type: Number,
-        required: [true, 'Stok produk harus diisi'],
-    },
     description: {
         type: String,
         maxlength: [1000, 'Maksimal deskripsi hanya sampai 1000 karakter']
     },
+    stock: Number,
     price: {
-        type: Number,
-        default: 0
+      type: Number,
+      required: [true, 'Harga produk harus diisi']
     },
-    image_url: String,
+    image_url: {
+        type: String,
+        required: [true, 'URL gambar harus diisi']
+    },
     category:{
         type: Schema.Types.ObjectId,
         ref: 'Category'

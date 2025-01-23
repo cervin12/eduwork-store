@@ -9,6 +9,8 @@ const Tag = require('../tags/model');
 const store = async (req, res, next) => {
   try {
     let payload = req.body;
+    // let image = req.file;
+
 
     if (payload.category) {
       let category = await Category.findOne({ name: { $regex: payload.category, $options: 'i' } });
@@ -26,13 +28,27 @@ const store = async (req, res, next) => {
           let foundTag = tags.find(t => t.name === tag);
           return foundTag ? foundTag.id : null;
         }).filter(tagId => tagId !== null);
-        payload = { ...payload, tags: newTags };
+
+        let newTagPromises = payload.tags
+          .filter(tag => !tags.find(t => t.name === tag))
+          .map(tag => new Tag({ name: tag }).save());
+
+        let newTagsCreated = await Promise.all(newTagPromises);
+        let newTagIds = newTagsCreated.map(tag => tag._id);
+        payload = { ...payload, tags: [...newTags, ...newTagIds] };
+      } else {
+        let newTagPromises = payload.tags.map(tag => new Tag({ name: tag }).save());
+        let newTagsCreated = await Promise.all(newTagPromises);
+        let newTagIds = newTagsCreated.map(tag => tag._id);
+        payload = { ...payload, tags: newTagIds };
       }
     }
 
+    
+
     if (req.file) {
       let tmp_path = req.file.path;
-      let originalExt = req.file.originalname.split('.').pop(); // Simplified extraction
+      let originalExt = req.file.originalname.split('.')[req.file.originalname.split('.').length -1]
       let filename = req.file.filename + '.' + originalExt;
       let target_path = path.resolve(config.rootPath, `public/images/products/${filename}`);
 
@@ -42,7 +58,7 @@ const store = async (req, res, next) => {
 
       src.on('end', async () => {
         try {
-          let product = new Product({ ...payload, image_url: filename });
+          let product = new Product({ ...payload, image_url: filename});
           await product.save();
           return res.status(201).json({
             status: 'success',
@@ -67,14 +83,7 @@ const store = async (req, res, next) => {
         next(err);
       });
     } else {
-      let product = new Product(payload);
-      await product.save();
-      return res.status(201).json({
-        status: 'success',
-        data: {
-          product,
-        },
-      });
+      res.status(400).json({ error: 1, message: 'Image is required.' });
     }
   } catch (err) {
     if (err && err.name === 'ValidationError') {
@@ -166,8 +175,10 @@ const update = async (req, res, next) => {
       let tmp_path = req.file.path;
       let originalExt = req.file.originalname.split('.').pop(); // Simplified extraction
       let filename = req.file.filename + '.' + originalExt;
+      if(!filename) return res.status(400).json({ error: 1, message: 'Filename is required.' });
       let target_path = path.resolve(config.rootPath, `public/images/products/${filename}`);
 
+      console.log(filename);
       const src = fs.createReadStream(tmp_path);
       const dest = fs.createWriteStream(target_path);
       src.pipe(dest);
